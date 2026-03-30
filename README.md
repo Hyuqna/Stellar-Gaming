@@ -28,6 +28,7 @@ lib.rs
 ●	Inline comments explaining what each function does and why
 
 
+
 test.rs
 
 ●	Exactly 3 tests using soroban_sdk::testutils — no more, no less
@@ -40,6 +41,9 @@ test.rs
 
 ●	Uses #[cfg(test)] and mod tests structure with Env::default() for all environment setup
 
+
+
+
 Cargo.toml
 
 ●	Package name: gaming (snake_case), edition = "2021"
@@ -49,6 +53,7 @@ Cargo.toml
 ●	[lib] section with crate-type = ["cdylib", "rlib"]
 
 ●	[gaming.release] optimized for Wasm output
+
 
 
 
@@ -67,6 +72,7 @@ README.md
 ●	Sample CLI invocation calling the certificate registration function with dummy arguments
 
 ●	UID License section
+
 
 
 Future Scope:
