@@ -1,53 +1,48 @@
 #![no_std]
 
-//! # soroban-community-treasury
+//! # soroban-gaming-trading-system
 //!
-//! A DAO community treasury with token-weighted governance on Stellar.
+//! A secure in-game item management and trading system using Soroban smart contracts on Stellar.
 //!
 //! ## Flow
 //!
-//! 1. **Deposit** — any address deposits tokens into the treasury.
-//!    The treasury balance is a collective pool; there are no
-//!    individual balances or refund rights.
+//! 1. **Mint Item** — the game creates NFT-based in-game items (e.g., skins, weapons)
+//!    and assigns ownership to players. Each item is unique and stored on-chain.
 //!
-//! 2. **Propose** — any governance token holder may submit a spending
-//!    proposal with a description, target recipient, and requested amount.
-//!    A voting window opens immediately.
+//! 2. **List Item** — a player lists an item for sale or trade by specifying
+//!    the item, price, and intended transaction details.
 //!
-//! 3. **Vote** — governance token holders vote `For` or `Against`.
-//!    Votes are token-weighted: weight = holder's governance token balance
-//!    at the time of voting.  Each address may vote once per proposal.
+//! 3. **Deposit** — the buyer deposits payment (XLM or tokens) into the smart contract,
+//!    which securely holds the funds until the trade conditions are met.
 //!
-//! 4. **Queue** — after the voting window closes, if
-//!    `for_votes × 10_000 / total_votes >= quorum_bps` AND
-//!    `for_votes > against_votes`, anyone calls `queue_proposal`.
-//!    The proposal enters a veto period.
+//! 4. **Verify** — the contract verifies ownership of the item and ensures
+//!    that the transaction is valid and not duplicated or fraudulent.
 //!
-//! 5. **Veto** — during the veto period the admin (or a designated
-//!    guardian) may cancel the proposal before execution.
+//! 5. **Execute Trade** — once all conditions are satisfied, the smart contract
+//!    automatically transfers the item to the buyer and releases payment to the seller.
 //!
-//! 6. **Execute** — after the veto period expires, anyone calls
-//!    `execute_proposal`.  Funds are transferred to the specified
-//!    recipient and the proposal is marked `Executed`.
+//! 6. **Reward** — optional rewards (e.g., tokens) can be distributed to players
+//!    for successful trades or gameplay achievements.
 //!
-//! 7. **Cancel** — admin may cancel any proposal that is not yet
-//!    `Executed`.  A proposer may cancel their own `Active` proposal
-//!    before the voting window closes.
+//! 7. **Cancel** — a trade can be canceled before completion if conditions are not met,
+//!    ensuring funds and items are safely returned to their original owners.
 //!
-//! ## Token-weighted Voting
+//! ## Secure Trading Logic
 //!
 //! ```text
-//! vote_weight = governance_token_balance(voter)   at time of vote
-//! for_votes / (for_votes + against_votes) >= quorum_bps / 10_000
+//! trade executes only if:
+//! - buyer payment is deposited
+//! - seller owns the item
+//! - item is not already transferred or duplicated
 //! ```
 //!
 //! ## Key Invariants
 //!
-//! - `treasury_balance` = cumulative deposits − cumulative executed payouts.
-//! - Queued proposals have their requested amount reserved; the treasury
-//!   cannot be over-committed.
-//! - A proposal may not be executed while the veto period is active.
-//! - Each address votes at most once per proposal.
+//! - Each in-game item has a unique owner stored on-chain.
+//! - Items cannot be duplicated or transferred without verification.
+//! - Payments are only released when trade conditions are fully met.
+//! - All transactions are transparent and recorded on the blockchain.
+//! - Players do not need to trust each other; the contract enforces fairness.
 
 use soroban_sdk::{
     contract, contractimpl, contracttype, symbol_short, token, Address, Env, String, Symbol, Vec,
