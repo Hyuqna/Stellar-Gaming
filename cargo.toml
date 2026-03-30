@@ -2,8 +2,8 @@
 name = "gaming"
 version = "0.1.0"
 edition = "2021"
-description = "A DAO community treasury with token-weighted governance, spending proposals, veto period before execution, and on-chain fund release on Soroban"
-license = "MIT"
+description = "A smart contract system on Soroban that manages in-game item ownership, enables secure and trustless trading between players, verifies transactions to prevent fraud, and handles automated payments or rewards on-chain."
+license = "UID"
 
 [lib]
 crate-type = ["cdylib"]
